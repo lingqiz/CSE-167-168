@@ -44,11 +44,11 @@ mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up)
     vec3 u = glm::normalize(glm::cross(up,eye));
     vec3 v = glm::normalize(glm::cross(w,u));
     // You will change this return call
-    return glm::transpose(mat4(vec4(u.x,u.y,u.z,glm::dot(u, -eye)),
-                               vec4(v.x,v.y,v.z,glm::dot(v, -eye)),
-                               vec4(w.x,w.y,w.z,glm::dot(w, -eye)),
-                               vec4(0,0,0,1)
-                               ));
+    return glm::transpose(
+      mat4(vec4(u.x,u.y,u.z,glm::dot(u, -eye)),
+           vec4(v.x,v.y,v.z,glm::dot(v, -eye)),
+           vec4(w.x,w.y,w.z,glm::dot(w, -eye)),
+           vec4(0,0,0,1)));
 }
 
 mat4 Transform::perspective(float fovy, float aspect, float zNear, float zFar)
@@ -68,20 +68,20 @@ mat4 Transform::perspective(float fovy, float aspect, float zNear, float zFar)
 
 mat4 Transform::scale(const float &sx, const float &sy, const float &sz) 
 {
-    return glm::transpose(mat4(vec4(sx,0,0,0),
-                               vec4(0,sy,0,0),
-                               vec4(0,0,sz,0),
-                               vec4(0,0,0,1)
-                               ));
+    return glm::transpose(
+      mat4(vec4(sx,0,0,0),
+           vec4(0,sy,0,0),
+           vec4(0,0,sz,0),
+           vec4(0,0,0,1)));
 }
 
 mat4 Transform::translate(const float &tx, const float &ty, const float &tz) 
 {
-      return glm::transpose(mat4(vec4(1,0,0,tx),
-                               vec4(0,1,0,ty),
-                               vec4(0,0,1,tz),
-                               vec4(0,0,0,1)
-                               ));
+      return glm::transpose(
+        mat4(vec4(1,0,0,tx),
+        vec4(0,1,0,ty),
+        vec4(0,0,1,tz),
+        vec4(0,0,0,1)));
 }
 
 // To normalize the up direction and construct a coordinate frame.  
