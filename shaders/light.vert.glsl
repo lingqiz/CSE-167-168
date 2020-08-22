@@ -10,8 +10,8 @@ uniform mat4 modelview;
 uniform mat4 projection;
 
 // Additional outputs for the vertex shader in addition to gl_Position
-smooth out vec3 mynormal;
-smooth out vec4 myvertex;
+out vec3 mynormal;
+out vec4 myvertex;
 
 void main() {
 	myvertex = modelview * vec4(position, 1.0f);
