@@ -10,9 +10,10 @@
 mat3 Transform::rotate(const float degrees, const vec3& axis) {
 	float radAng  = degrees / 180.0 * pi;
 	
-	float x = axis[0];
-	float y = axis[1];
-	float z = axis[2];
+  vec3 normAxis = glm::normalize(axis);
+	float x = normAxis[0];
+	float y = normAxis[1];
+	float z = normAxis[2];
 
 	mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	mat3 projection = mat3(x*x, x*y, x*z, x*y, y*y, y*z, x*z, y*z, z*z);	

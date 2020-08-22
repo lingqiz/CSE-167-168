@@ -36,17 +36,17 @@ uniform vec4 specular;
  
 uniform float shininess;
 
-vec4 shadingCompute (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal, const in vec3 halfvec) 
+vec4 shadingCompute (const in vec3 direction, const in vec4 colorL, const in vec3 normal, const in vec3 halfvec) 
 {    
         // lambertian surface
         // only depends on dot(light_direction, surface_normal); shape from shading
         float nDotL = dot(normal, direction);         
-        vec4 lambert = diffuse * lightcolor * max (nDotL, 0.0);  
+        vec4 lambert = diffuse * colorL * max (nDotL, 0.0);  
 
         // specular surface with phong illumination model
         // dependent on the eye direction (half vector)
         float nDotH = dot(normal, halfvec); 
-        vec4 phong = specular * lightcolor * pow (max(nDotH, 0.0), shininess); 
+        vec4 phong = specular * colorL * pow (max(nDotH, 0.0), shininess); 
 
         vec4 retval = lambert + phong; 
         return retval;      
@@ -60,13 +60,17 @@ vec4 lightCompute(vec4 lightPos, vec4 lightColor)
     vec3 normal = normalize(mynormal);
 
     vec3 lightDir;
-    if(lightPos.w == 0)    
+    if(lightPos.w == 0)
+    {
         lightDir = normalize(lightPos.xyz);
+    }      
     else
-        lightDir = normalize(lightPos.xyz / lightPos.w - mypos);
+    {
+        vec3 lPos = lightPos.xyz / lightPos.w;
+        lightDir = normalize(lPos - mypos);
+    }    
 
-    vec3 halfVec = normalize (lightDir + eyedirn);
-
+    vec3 halfVec = normalize(lightDir + eyedirn);
     return shadingCompute(lightDir, lightColor, normal, halfVec);
 }
 
@@ -74,16 +78,17 @@ void main (void)
 {       
     if (enablelighting) {
         
-        fragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        for(int idl = 0; idl < numused; idl++)        
-            fragColor = fragColor + lightCompute(lightposn[idl], lightcolor[idl]);
-        
-        fragColor = fragColor + ambient + emission;
-        fragColor[3] = 1.0f;
+        vec4 allColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        for(int idl = 0; idl < numused; idl++)
+        {
+            allColor += lightCompute(lightposn[idl], lightcolor[idl]);
+        }
+                   
+        fragColor = allColor + ambient + emission;
+    }
 
-    } else {
-
+    else 
+    {
         fragColor = vec4(color, 1.0f);
-
     }
 }

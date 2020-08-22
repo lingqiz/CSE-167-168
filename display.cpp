@@ -67,8 +67,7 @@ void transformvec (const GLfloat input[4], GLfloat output[4])
 void display() 
 {
   glClearColor(0, 0, 1, 0);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
   // Either use the built-in lookAt function or the lookAt implemented by the user.
   
   modelview = glm::lookAt(eye, center, up);   
@@ -76,27 +75,20 @@ void display()
 
   // Lights are transformed by current modelview matrix. 
   // The shader can't do this globally. 
-  // So we need to do so manually.  
+  // So we need to do so manually.
+
   if (numused) {    
     glUniform1i(enablelighting,true);
-
-    // transform the light to camera coordinate 
-    for(int idl = 0; idl < numused; idl++)
-    {
-      int baseIdx = idl * 4;
-      vec4 lightPos = vec4(lightposn[baseIdx+0], lightposn[baseIdx+1], lightposn[baseIdx+2], lightposn[baseIdx+3]);
-      vec4 lightTrans = modelview * lightPos;
-      
-      for(int j = 0; j < 4; j++)      
-        lightransf[baseIdx+j] = lightTrans[j];
-    }
-
+  
+    for (int i = 0 ; i < numused ; i++) 
+      transformvec(&lightposn[i*4],&lightransf[i*4]);
+    
     glUniform1i(numusedcol, numused);
-    glUniform4fv(lightpos, numLights, &lightransf[0]);
-    glUniform4fv(lightcol, numLights, &lightcolor[0]);   
+    glUniform4fv(lightpos, numused, lightransf);
+    glUniform4fv(lightcol, numused, lightcolor);
 
   } else {
-    glUniform1i(enablelighting,false); 
+    glUniform1i(enablelighting, false); 
   }
 
   // global transformation
@@ -109,12 +101,14 @@ void display()
     modelview = modelviewGlobal * (obj->transform);
     
     // setup light and material properties for objects
-    glUniform4fv(ambientcol, 1, &(obj->ambient[0]));
-    glUniform4fv(emissioncol, 1, &(obj->emission[0]));
-    glUniform4fv(diffusecol, 1, &(obj->diffuse[0]));
-    glUniform4fv(specularcol, 1, &(obj->specular[0]));
+
+    glUniform4fv(ambientcol, 1, obj->ambient);
+    glUniform4fv(emissioncol, 1, obj->emission);
+    glUniform4fv(diffusecol, 1, obj->diffuse);
+    glUniform4fv(specularcol, 1, obj->specular);
     glUniform1f(shininesscol, obj->shininess);
 
+    glUniformMatrix4fv(modelviewPos, 1, GL_FALSE, &(obj->transform[0][0]));
     // Actually draw the object
     // We provide the actual drawing functions for you.  
     // Remember that obj->type is notation for accessing struct fields

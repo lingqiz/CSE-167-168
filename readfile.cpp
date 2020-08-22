@@ -106,16 +106,12 @@ void readfile(const char* filename)
           } else {
             validinput = readvals(s, 8, values); // Position/color for lts.
             if (validinput) {
-              
-              vec4 lightPos = vec4(values[0],values[1],values[2],values[3]); 
-              vec4 lightTrans = transfstack.top() * lightPos;
-
+                            
               int baseIdx = numused * 4;
               for(int idx=0; idx < 4; idx++)
               {
-                lightposn[baseIdx + idx] = lightPos[idx];
-                lightcolor[baseIdx + idx] = values[4 + idx];
-                lightransf[baseIdx + idx] = lightTrans[idx];                
+                lightposn[baseIdx + idx] = values[idx];
+                lightcolor[baseIdx + idx] = values[4 + idx];                
               }
               
               ++numused; 
@@ -250,10 +246,11 @@ void readfile(const char* filename)
             
             float radAng = values[3] / 180.0 * 3.1415926;
             
-            float x = values[0];
-            float y = values[1];
-            float z = values[2];
-
+            vec3 normAxis = -glm::normalize(vec3(values[0], values[1], values[2]));
+	          float x = normAxis[0];
+	          float y = normAxis[1];
+	          float z = normAxis[2];
+            
             mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
             mat3 projection = mat3(x*x, x*y, x*z, 
                                   x*y, y*y, y*z, 
