@@ -40,34 +40,48 @@ void Transform::up(float degrees, vec3& eye, vec3& up) {
 
 mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up) 
 {
-  mat4 ret;
-  // YOUR CODE FOR HW2 HERE
-  // Likely the same as in HW 1.  
-  return ret;
+    vec3 w = glm::normalize(eye);
+    vec3 u = glm::normalize(glm::cross(up,eye));
+    vec3 v = glm::normalize(glm::cross(w,u));
+    // You will change this return call
+    return glm::transpose(mat4(vec4(u.x,u.y,u.z,glm::dot(u, -eye)),
+                               vec4(v.x,v.y,v.z,glm::dot(v, -eye)),
+                               vec4(w.x,w.y,w.z,glm::dot(w, -eye)),
+                               vec4(0,0,0,1)
+                               ));
 }
 
 mat4 Transform::perspective(float fovy, float aspect, float zNear, float zFar)
 {
-  mat4 ret;
-  // YOUR CODE FOR HW2 HERE
-  // New, to implement the perspective transform as well.  
-  return ret;
+    mat4 ret(0);
+    
+    float scale = 1 / tan(fovy * 0.5 * M_PI / 180);
+    ret[0][0] = scale/aspect; // scale the x coordinates of the projected point
+    ret[1][1] = scale; // scale the y coordinates of the projected point
+    ret[2][2] = -zFar / (zFar - zNear); // used to remap z to [0,1]
+    ret[3][2] = -zFar * zNear / (zFar - zNear); // used to remap z [0,1]
+    ret[2][3] = -1; // set w = -z
+    ret[3][3] = 0;
+    
+    return ret;
 }
 
 mat4 Transform::scale(const float &sx, const float &sy, const float &sz) 
 {
-  mat4 ret;
-  // YOUR CODE FOR HW2 HERE
-  // Implement scaling 
-  return ret;
+    return glm::transpose(mat4(vec4(sx,0,0,0),
+                               vec4(0,sy,0,0),
+                               vec4(0,0,sz,0),
+                               vec4(0,0,0,1)
+                               ));
 }
 
 mat4 Transform::translate(const float &tx, const float &ty, const float &tz) 
 {
-  mat4 ret;
-  // YOUR CODE FOR HW2 HERE
-  // Implement translation 
-  return ret;
+      return glm::transpose(mat4(vec4(1,0,0,tx),
+                               vec4(0,1,0,ty),
+                               vec4(0,0,1,tz),
+                               vec4(0,0,0,1)
+                               ));
 }
 
 // To normalize the up direction and construct a coordinate frame.  
