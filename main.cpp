@@ -171,7 +171,7 @@ void init() {
   enablelighting = glGetUniformLocation(shaderprogram,"enablelighting") ;
   lightpos = glGetUniformLocation(shaderprogram,"lightposn") ;       
   lightcol = glGetUniformLocation(shaderprogram,"lightcolor") ;       
-  numusedcol = glGetUniformLocation(shaderprogram,"numused") ;       
+  numusedcol = glGetUniformLocation(shaderprogram,"numused") ;     
   ambientcol = glGetUniformLocation(shaderprogram,"ambient") ;       
   diffusecol = glGetUniformLocation(shaderprogram,"diffuse") ;       
   specularcol = glGetUniformLocation(shaderprogram,"specular") ;       
@@ -199,6 +199,7 @@ int main(int argc, char* argv[]) {
 #else
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 #endif
+  glutInitWindowSize (w, h);
   glutCreateWindow("HW2: Scene Viewer");
 
 #ifndef __APPLE__ // GLew not needed on OSX systems

@@ -106,12 +106,18 @@ void readfile(const char* filename)
           } else {
             validinput = readvals(s, 8, values); // Position/color for lts.
             if (validinput) {
+              
+              vec4 lightPos = vec4(values[0],values[1],values[2],values[3]); 
+              vec4 lightTrans = transfstack.top() * lightPos;
 
-              // YOUR CODE FOR HW 2 HERE. 
-              // Note that values[0...7] shows the read in values 
-              // Make use of lightposn[] and lightcolor[] arrays in variables.h
-              // Those arrays can then be used in display too.  
-
+              int baseIdx = numused * 4;
+              for(int idx=0; idx < 4; idx++)
+              {
+                lightposn[baseIdx + idx] = lightPos[idx];
+                lightcolor[baseIdx + idx] = values[4 + idx];
+                lightransf[baseIdx + idx] = lightTrans[idx];                
+              }
+              
               ++numused; 
             }
           }
@@ -249,10 +255,15 @@ void readfile(const char* filename)
             float z = values[2];
 
             mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
-            mat3 projection = mat3((1.0 - cos(radAng)) * x*x, (1.0 - cos(radAng)) * x*y, (1.0 - cos(radAng)) * x*z, 
-                                   (1.0 - cos(radAng)) * x*y, (1.0 - cos(radAng)) * y*y, (1.0 - cos(radAng)) * y*z, 
-                                   (1.0 - cos(radAng)) * x*z, (1.0 - cos(radAng)) * y*z, (1.0 - cos(radAng)) * z*z);	
-            mat3 dual 		= mat3(0, z, -y, -z, 0, x, y, -x, 0);
+            mat3 projection = mat3(x*x, x*y, x*z, 
+                                  x*y, y*y, y*z, 
+                                  x*z, y*z, z*z);
+
+            for(int i = 0; i < 3; i++)
+              for(int j = 0; j < 3; j++)
+                projection[i][j] = projection[i][j] * (1.0 - cos(radAng));                                              
+
+            mat3 dual = mat3(0, z, -y, -z, 0, x, y, -x, 0);
             
             mat3 rotate_3 = cos(radAng) * identity + projection + sin(radAng) * dual;
             mat4 rotateMtx = 

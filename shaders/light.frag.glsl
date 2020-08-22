@@ -29,24 +29,61 @@ uniform int numused;               // number of lights used
 // But, the ambient is just additive and doesn't multiply the lights.  
 
 uniform vec4 ambient; 
+uniform vec4 emission;
+
 uniform vec4 diffuse; 
 uniform vec4 specular; 
-uniform vec4 emission; 
-uniform float shininess; 
+ 
+uniform float shininess;
+
+vec4 shadingCompute (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal, const in vec3 halfvec) 
+{    
+        // lambertian surface
+        // only depends on dot(light_direction, surface_normal); shape from shading
+        float nDotL = dot(normal, direction);         
+        vec4 lambert = diffuse * lightcolor * max (nDotL, 0.0);  
+
+        // specular surface with phong illumination model
+        // dependent on the eye direction (half vector)
+        float nDotH = dot(normal, halfvec); 
+        vec4 phong = specular * lightcolor * pow (max(nDotH, 0.0), shininess); 
+
+        vec4 retval = lambert + phong; 
+        return retval;      
+}   
+
+vec4 lightCompute(vec4 lightPos, vec4 lightColor)
+{
+    const vec3 eyepos = vec3(0, 0, 0);
+    vec3 mypos = myvertex.xyz / myvertex.w;
+    vec3 eyedirn = normalize(eyepos - mypos);
+    vec3 normal = normalize(mynormal);
+
+    vec3 lightDir;
+    if(lightPos.w == 0)    
+        lightDir = normalize(lightPos.xyz);
+    else
+        lightDir = normalize(lightPos.xyz / lightPos.w - mypos);
+
+    vec3 halfVec = normalize (lightDir + eyedirn);
+
+    return shadingCompute(lightDir, lightColor, normal, halfVec);
+}
 
 void main (void) 
 {       
-    if (enablelighting) {       
-        vec4 finalcolor; 
+    if (enablelighting) {
+        
+        fragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        for(int idl = 0; idl < numused; idl++)        
+            fragColor = fragColor + lightCompute(lightposn[idl], lightcolor[idl]);
+        
+        fragColor = fragColor + ambient + emission;
+        fragColor[3] = 1.0f;
 
-        // YOUR CODE FOR HW 2 HERE
-        // A key part is implementation of the fragment shader
-
-        // Color all pixels black for now, remove this in your implementation!
-        finalcolor = vec4(0.0f, 0.0f, 0.0f, 1.0f); 
-
-        fragColor = finalcolor; 
     } else {
-        fragColor = vec4(color, 1.0f); 
+
+        fragColor = vec4(color, 1.0f);
+
     }
 }

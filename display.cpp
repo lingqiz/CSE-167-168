@@ -77,31 +77,43 @@ void display()
   // Lights are transformed by current modelview matrix. 
   // The shader can't do this globally. 
   // So we need to do so manually.  
-  if (numused) {
+  if (numused) {    
     glUniform1i(enablelighting,true);
 
-    // YOUR CODE FOR HW 2 HERE.  
-    // You need to pass the light positions and colors to the shader. 
-    // glUniform4fv() and similar functions will be useful. See FAQ for help with these functions.
-    // The lightransf[] array in variables.h and transformvec() might also be useful here.
-    // Remember that light positions must be transformed by modelview.  
+    // transform the light to camera coordinate 
+    for(int idl = 0; idl < numused; idl++)
+    {
+      int baseIdx = idl * 4;
+      vec4 lightPos = vec4(lightposn[baseIdx+0], lightposn[baseIdx+1], lightposn[baseIdx+2], lightposn[baseIdx+3]);
+      vec4 lightTrans = modelview * lightPos;
+      
+      for(int j = 0; j < 4; j++)      
+        lightransf[baseIdx+j] = lightTrans[j];
+    }
+
+    glUniform1i(numusedcol, numused);
+    glUniform4fv(lightpos, numLights, &lightransf[0]);
+    glUniform4fv(lightcol, numLights, &lightcolor[0]);   
 
   } else {
     glUniform1i(enablelighting,false); 
   }
 
-  
   // global transformation
   mat4 modelviewGlobal = modelview * translateMtx(tx, ty, 0.0) * scaleMtx(sx, sy, 1.0);
 
   for (int i = 0 ; i < numobjects ; i++) {
     object* obj = &(objects[i]); // Grabs an object struct.
 
-    // YOUR CODE FOR HW 2 HERE. 
+    // modelView matrix for individual objects
     modelview = modelviewGlobal * (obj->transform);
-    // And pass in the appropriate material properties
-    // Again glUniform() related functions will be useful
-
+    
+    // setup light and material properties for objects
+    glUniform4fv(ambientcol, 1, &(obj->ambient[0]));
+    glUniform4fv(emissioncol, 1, &(obj->emission[0]));
+    glUniform4fv(diffusecol, 1, &(obj->diffuse[0]));
+    glUniform4fv(specularcol, 1, &(obj->specular[0]));
+    glUniform1f(shininesscol, obj->shininess);
 
     // Actually draw the object
     // We provide the actual drawing functions for you.  
