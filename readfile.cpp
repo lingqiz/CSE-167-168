@@ -246,11 +246,10 @@ void readfile(const char* filename)
             
             float radAng = values[3] / 180.0 * 3.1415926;
             
-            vec3 normAxis = -glm::normalize(vec3(values[0], values[1], values[2]));
-	          float x = normAxis[0];
-	          float y = normAxis[1];
-	          float z = normAxis[2];
-            
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
+
             mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
             mat3 projection = mat3(x*x, x*y, x*z, 
                                   x*y, y*y, y*z, 
@@ -265,12 +264,12 @@ void readfile(const char* filename)
             mat3 rotate_3 = cos(radAng) * identity + projection + sin(radAng) * dual;
             mat4 rotateMtx = 
             mat4(
-                  vec4(rotate_3[0][0], rotate_3[1][0], rotate_3[2][0], 0),
-                  vec4(rotate_3[0][1], rotate_3[1][1], rotate_3[2][1], 0),
-                  vec4(rotate_3[0][2], rotate_3[1][2], rotate_3[2][2], 0),
+                  vec4(rotate_3[0][0], rotate_3[0][1], rotate_3[0][2], 0),
+                  vec4(rotate_3[1][0], rotate_3[1][1], rotate_3[1][2], 0),
+                  vec4(rotate_3[2][0], rotate_3[2][1], rotate_3[2][2], 0),
                   vec4(0, 0, 0, 1)
               );
-
+                        
             rightmultiply(rotateMtx, transfstack);
           }
         }
