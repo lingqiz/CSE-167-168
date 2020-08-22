@@ -7,25 +7,35 @@
 #include "Transform.h"
 
 // Helper rotation function.  Please implement this.  
-mat3 Transform::rotate(const float degrees, const vec3& axis) 
-{
-  mat3 ret;
-  // YOUR CODE FOR HW2 HERE
-  // Please implement this.  Likely the same as in HW 1.  
-  return ret;
+mat3 Transform::rotate(const float degrees, const vec3& axis) {
+	float radAng  = degrees / 180.0 * pi;
+	
+	float x = axis[0];
+	float y = axis[1];
+	float z = axis[2];
+
+	mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	mat3 projection = mat3(x*x, x*y, x*z, x*y, y*y, y*z, x*z, y*z, z*z);	
+	mat3 dual 		= mat3(0, z, -y, -z, 0, x, y, -x, 0);
+	
+	return cos(radAng) * identity + (1 - cos(radAng)) * projection + sin(radAng) * dual; 
 }
 
-void Transform::left(float degrees, vec3& eye, vec3& up) 
-{
-  // YOUR CODE FOR HW2 HERE
-  // Likely the same as in HW 1.  
+// Transforms the camera left around the "crystal ball" interface
+void Transform::left(float degrees, vec3& eye, vec3& up) {
+	mat3 rotateMtx = rotate(degrees, glm::normalize(up));
+	eye = rotateMtx * eye;
+	up  = rotateMtx * up;
 }
 
-void Transform::up(float degrees, vec3& eye, vec3& up) 
-{
-  // YOUR CODE FOR HW2 HERE 
-  // Likely the same as in HW 1.  
+// Transforms the camera up around the "crystal ball" interface
+void Transform::up(float degrees, vec3& eye, vec3& up) {
+	vec3 rotDir = glm::cross(eye, up);
+	mat3 rotateMtx = rotate(degrees, glm::normalize(rotDir));
+	eye = rotateMtx * eye;
+	up  = rotateMtx * up;
 }
+
 
 mat4 Transform::lookAt(const vec3 &eye, const vec3 &center, const vec3 &up) 
 {

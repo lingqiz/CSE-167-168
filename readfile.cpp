@@ -166,10 +166,10 @@ void readfile(const char* filename)
           if (validinput) {
 
             // YOUR CODE FOR HW 2 HERE
-            // Use all of values[0...9]
-            // You may need to use the upvector fn in Transform.cpp
-            // to set up correctly. 
-            // Set eyeinit upinit center fovy in variables.h 
+            eyeinit = vec3(values[0], values[1], values[2]);
+            center = vec3(values[3], values[4], values[5]);
+            upinit = vec3(values[6], values[7], values[8]);
+            fovy = values[9];            
 
           }
         }
@@ -215,10 +215,13 @@ void readfile(const char* filename)
           validinput = readvals(s,3,values); 
           if (validinput) {
 
-            // YOUR CODE FOR HW 2 HERE.  
-            // Think about how the transformation stack is affected
-            // You might want to use helper functions on top of file. 
-            // Also keep in mind what order your matrix is!
+              mat4 transMtx = 
+              mat4(vec4(1.0, 0.0, 0.0, 0.0),
+                   vec4(0.0, 1.0, 0.0, 0.0),
+                   vec4(0.0, 0.0, 1.0, 0.0),
+                   vec4(values[0], values[1], values[2], 1.0));
+
+              rightmultiply(transMtx, transfstack);
 
           }
         }
@@ -226,24 +229,41 @@ void readfile(const char* filename)
           validinput = readvals(s,3,values); 
           if (validinput) {
 
-            // YOUR CODE FOR HW 2 HERE.  
-            // Think about how the transformation stack is affected
-            // You might want to use helper functions on top of file.  
-            // Also keep in mind what order your matrix is!
+            mat4 scaleMtx = 
+            mat4(vec4(values[0], 0.0, 0.0, 0.0),
+                 vec4(0.0, values[1], 0.0, 0.0),
+                 vec4(0.0, 0.0, values[2], 0.0),
+                 vec4(0.0, 0.0, 0.0, 1.0));
 
+            rightmultiply(scaleMtx, transfstack);
           }
         }
         else if (cmd == "rotate") {
           validinput = readvals(s,4,values); 
           if (validinput) {
+            
+            float radAng = values[3] / 180.0 * 3.1415926;
+            
+            float x = values[0];
+            float y = values[1];
+            float z = values[2];
 
-            // YOUR CODE FOR HW 2 HERE. 
-            // values[0..2] are the axis, values[3] is the angle.  
-            // You may want to normalize the axis (or in Transform::rotate)
-            // See how the stack is affected, as above.  
-            // Note that rotate returns a mat3. 
-            // Also keep in mind what order your matrix is!
+            mat3 identity   = mat3(1, 0, 0, 0, 1, 0, 0, 0, 1);
+            mat3 projection = mat3((1.0 - cos(radAng)) * x*x, (1.0 - cos(radAng)) * x*y, (1.0 - cos(radAng)) * x*z, 
+                                   (1.0 - cos(radAng)) * x*y, (1.0 - cos(radAng)) * y*y, (1.0 - cos(radAng)) * y*z, 
+                                   (1.0 - cos(radAng)) * x*z, (1.0 - cos(radAng)) * y*z, (1.0 - cos(radAng)) * z*z);	
+            mat3 dual 		= mat3(0, z, -y, -z, 0, x, y, -x, 0);
+            
+            mat3 rotate_3 = cos(radAng) * identity + projection + sin(radAng) * dual;
+            mat4 rotateMtx = 
+            mat4(
+                  vec4(rotate_3[0][0], rotate_3[1][0], rotate_3[2][0], 0),
+                  vec4(rotate_3[0][1], rotate_3[1][1], rotate_3[2][1], 0),
+                  vec4(rotate_3[0][2], rotate_3[1][2], rotate_3[2][2], 0),
+                  vec4(0, 0, 0, 1)
+              );
 
+            rightmultiply(rotateMtx, transfstack);
           }
         }
 

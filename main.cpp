@@ -31,16 +31,10 @@ using namespace std;
 #define MAINPROGRAM 
 #include "variables.h" 
 #include "readfile.h" // prototypes for readfile.cpp  
-void display(void);  // prototype for display function.  
+void display(void);
 
 Grader grader;
 bool allowGrader = false;
-
-
-void display(void)
-{
-
-}
 
 // Reshapes the window
 void reshape(int width, int height){

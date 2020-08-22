@@ -32,7 +32,28 @@ using namespace std ;
 // May be better done using newer glm functionality.
 // Provided for your convenience.  Use is optional.  
 // Some of you may want to use the more modern routines in readfile.cpp 
-// that can also be used.  
+// that can also be used.
+
+mat4 scaleMtx(float x, float y, float z)
+{
+    return mat4(
+        vec4(x,   0.0, 0.0, 0.0),
+        vec4(0.0, y,   0.0, 0.0),
+        vec4(0.0, 0.0, z,   0.0),
+        vec4(0.0, 0.0, 0.0, 1.0)
+    );
+}
+
+mat4 translateMtx(float x, float y, float z)
+{
+    return mat4(
+        vec4(1.0, 0.0, 0.0, 0.0),
+        vec4(0.0, 1.0, 0.0, 0.0),
+        vec4(0.0, 0.0, 1.0, 0.0),
+        vec4(x,   y,   z,   1.0)
+    );
+}
+
 void transformvec (const GLfloat input[4], GLfloat output[4]) 
 {
   glm::vec4 inputvec(input[0], input[1], input[2], input[3]);
@@ -49,11 +70,8 @@ void display()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Either use the built-in lookAt function or the lookAt implemented by the user.
-  if (useGlu) {
-    modelview = glm::lookAt(eye,center,up); 
-  } else {
-    modelview = Transform::lookAt(eye,center,up); 
-  }
+  
+  modelview = glm::lookAt(eye, center, up);   
   glUniformMatrix4fv(modelviewPos, 1, GL_FALSE, &modelview[0][0]);
 
   // Lights are transformed by current modelview matrix. 
@@ -72,27 +90,15 @@ void display()
     glUniform1i(enablelighting,false); 
   }
 
-  // Transformations for objects, involving translation and scaling 
-  mat4 sc(1.0) , tr(1.0), transf(1.0); 
-  sc = Transform::scale(sx,sy,1.0); 
-  tr = Transform::translate(tx,ty,0.0); 
-
-  // YOUR CODE FOR HW 2 HERE.  
-  // You need to use scale, translate and modelview to 
-  // set up the net transformation matrix for the objects.  
-  // Account for GLM issues, matrix order, etc.  
-
   
-  // The object draw functions will need to further modify the top of the stack,
-  // so assign whatever transformation matrix you intend to work with to modelview
-  // rather than use a uniform variable for that.
-  modelview = transf;
+  // global transformation
+  mat4 modelviewGlobal = modelview * translateMtx(tx, ty, 0.0) * scaleMtx(sx, sy, 1.0);
 
   for (int i = 0 ; i < numobjects ; i++) {
     object* obj = &(objects[i]); // Grabs an object struct.
 
     // YOUR CODE FOR HW 2 HERE. 
-    // Set up the object transformations 
+    modelview = modelviewGlobal * (obj->transform);
     // And pass in the appropriate material properties
     // Again glUniform() related functions will be useful
 
