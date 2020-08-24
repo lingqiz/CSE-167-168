@@ -33,7 +33,9 @@ translate 0 0 -0.2
 # Floor (white but now with shading)
 # Materials first.  We don't change specular and shininess
   ambient 0 0 0 1
-  diffuse 1 1 1 1
+  # diffuse 1 1 1 1
+  specular 0.5 0.5 0.5 1
+  shininess 100
   pushTransform
         scale 1.0 1.0 0.025 
         cube 1.0 

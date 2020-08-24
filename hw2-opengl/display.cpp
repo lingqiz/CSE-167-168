@@ -66,7 +66,7 @@ void transformvec (const GLfloat input[4], GLfloat output[4])
 
 void display() 
 {
-  glClearColor(0, 0, 1, 0);
+  glClearColor(0.2, 0.2, 0.2, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
   // Either use the built-in lookAt function or the lookAt implemented by the user.
   
