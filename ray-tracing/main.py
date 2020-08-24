@@ -7,4 +7,10 @@ if len(sys.argv) != 2:
     raise ValueError('Incorrect Number of Input Argument')
 
 file_name = str(sys.argv[1])
-scene.SceneReader(file_name).read_file()
+reader = scene.SceneReader(file_name)
+scene_config = reader.read_file()
+
+# from pprint import pprint
+# pprint(vars(reader))
+# pprint(vars(scene_config))
+
