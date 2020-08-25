@@ -63,3 +63,15 @@ def def_rotation(input, reader):
 def def_transform(mtx, reader):
     # right multiply transformation matrix
     reader.transform[-1] = reader.transform[-1] @ mtx
+
+def def_sphere(input, reader):
+    input = [float(val) for val in input]
+    sphere = {'loc':np.array(input[0:3]), 'radius':input[-1]}
+    reader.scene.spheres.append(sphere)
+
+def def_vertex(input, reader):
+    reader.scene.vertices.append(tuple([float(val) for val in input]))
+
+def def_triangle(input, reader):
+    input = [int(val) for val in input]
+    reader.scene.triangle_init(input, reader.transform[-1], reader.material.copy())

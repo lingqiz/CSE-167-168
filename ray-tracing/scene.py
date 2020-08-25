@@ -9,6 +9,7 @@ class Scene:
         return vec / np.linalg.norm(vec)
 
     def __init__(self):
+        # basic setup
         self.width = 0
         self.height = 0
         self.depth = 5
@@ -17,9 +18,12 @@ class Scene:
         # default attenuation
         self.light_attenu = np.array([1.0, 0.0, 0.0])        
 
+        # elements of the scene
         self.camera = {}
-        self.vertices = []
         self.lights = []
+        self.vertices = []
+        self.spheres = []
+        self.triangles = []        
         
     def cam_init(self, input):
         input = [float(coor) for coor in input]
@@ -42,12 +46,17 @@ class Scene:
 
         self.camera = camera
 
+    def triangle_init(self, input, mtx, material):
+        self.triangles.append({'ver_index':input, 'transform':mtx, **material})
+
+
 class SceneReader:
     
     # class interpreter map
     def_mapping = {'size':def_size, 'camera':def_cam, 'maxdepth':def_depth, 'output':def_filename, \
         'directional':def_dirlight, 'point':def_ptlight, 'pushTransform':def_push, 'popTransform':def_pop, \
-        'translate':def_translate, 'rotate':def_rotation, 'scale':def_scale}
+        'translate':def_translate, 'rotate':def_rotation, 'scale':def_scale, 'sphere': def_sphere, \
+        'tri':def_triangle, 'vertex':def_vertex}
     
     def __init__(self, file_name):
         # assume scene file is in current dir
