@@ -9,7 +9,3 @@ if len(sys.argv) != 2:
 file_name = str(sys.argv[1])
 reader = scene.SceneReader(file_name)
 scene_config = reader.read_file()
-
-from pprint import pprint
-pprint(vars(scene_config))
-

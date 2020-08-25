@@ -47,7 +47,7 @@ def def_rotation(input, reader):
     input = [float(val) for val in input]
 
     axis = np.array(input[0:3])
-    axis = axis / np.norm(axis)
+    axis = axis / np.linalg.norm(axis)
     angle = input[-1] / 180.0 * np.pi 
     
     dual_mtx = np.array([[0, -axis[-1], axis[1]], \

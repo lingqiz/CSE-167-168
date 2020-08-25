@@ -32,10 +32,14 @@ class Scene:
         cam_from = np.array(input[0:3])
         camera['loc'] = cam_from
 
-        cam_at   = np.array(input[3:6])
-        cam_up   = np.array(input[6:9])
+        cam_at = np.array(input[3:6])
+        cam_up = np.array(input[6:9])
 
-        camera['fovy']  = input[-1]
+        camera['fovy'] = input[-1]
+        camera['fovy_rad'] = camera['fovy'] / 180.0 * np.pi
+
+        camera['fovx_rad'] = 2 * np.arctan(np.tan(camera['fovy_rad'] / 2) * self.width / self.height)
+        camera['fovx'] = camera['fovx_rad'] / np.pi * 180.0
 
         # camera in the -z direction
         camera['dir'] = self.norm_vec(cam_at - cam_from)        
