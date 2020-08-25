@@ -3,6 +3,7 @@ import numpy as np
 from read_helper import *
 
 class Scene:
+
     @staticmethod
     def norm_vec(vec):
         return vec / np.linalg.norm(vec)
@@ -13,9 +14,8 @@ class Scene:
         self.depth = 5
         self.output_name = 'ray_tracing'
         
-        # default attenuation term and ambient light
-        self.light_attenu = np.array([1.0, 0.0, 0.0])
-        self.ambient = np.array([0.2, 0.2, 0.2])
+        # default attenuation
+        self.light_attenu = np.array([1.0, 0.0, 0.0])        
 
         self.camera = {}
         self.vertices = []
@@ -47,14 +47,15 @@ class SceneReader:
     # class interpreter map
     def_mapping = {'size':def_size, 'camera':def_cam, 'maxdepth':def_depth, 'output':def_filename, \
         'directional':def_dirlight, 'point':def_ptlight, 'pushTransform':def_push, 'popTransform':def_pop, \
-            }
+        'translate':def_translate, 'rotate':def_rotation, 'scale':def_scale}
     
     def __init__(self, file_name):
         # assume scene file is in current dir
         self.file_name = './' + file_name
         self.transform = [np.eye(4)]
 
-        self.material = {'ambient':np.zeros(3), 'diffuse':np.zeros(3), 'specular':np.zeros(3), 'emission':np.zeros(3), 'shininess':np.array(0.0)}
+        self.material = {'ambient':0.2*np.ones(3), 'diffuse':np.zeros(3), 'specular':np.zeros(3), \
+                        'emission':np.zeros(3), 'shininess':np.array(0.0)}
         
         self.scene = Scene()
         
@@ -69,8 +70,10 @@ class SceneReader:
 
             arg_list = line.split()
             arg_key = arg_list[0]
+
             if arg_key in self.def_mapping.keys():                
                 self.def_mapping[arg_key](arg_list[1:], self)
+
             elif arg_key in self.material.keys():
                 self.material[arg_key] = np.array([float(val) for val in arg_list[1:]])
 
