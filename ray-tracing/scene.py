@@ -1,4 +1,4 @@
-# class and helper function for scene def
+# class and helper function for scene definition
 import numpy as np
 from read_helper import *
 
@@ -50,8 +50,16 @@ class Scene:
 
         self.camera = camera
 
-    def triangle_init(self, input, mtx, material):
-        triangle = {'ver_index':input, 'transform':mtx, **material}
+    def triangle_init(self, input, mtx, material):        
+        vertice_1 = np.array(self.vertices[input[0]])
+        vertice_2 = np.array(self.vertices[input[1]])
+        vertice_3 = np.array(self.vertices[input[2]])
+
+        normal_vec = np.cross(vertice_1 - vertice_2, vertice_1 - vertice_3)
+        normal_vec = normal_vec / np.linalg.norm(normal_vec)
+
+        triangle = {'ver_index':input, 'transform':mtx, 'surface':normal_vec, **material}
+
         self.triangles.append(triangle)
 
     def sphere_init(self, input, mtx, material):
