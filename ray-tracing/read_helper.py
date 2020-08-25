@@ -37,11 +37,11 @@ def def_translate(input, reader):
     translate_mtx = np.eye(4)
     translate_mtx[0:3, -1] = np.array(input)
     
-    def_transform(translate_mtx, reader)
+    reader.transform[-1] = reader.transform[-1] @ translate_mtx    
 
 def def_scale(input, reader):
     input = [float(val) for val in input] + [1.0]
-    def_transform(np.diag(input), reader)        
+    reader.transform[-1] = reader.transform[-1] @ np.diag(input)    
 
 def def_rotation(input, reader):
     input = [float(val) for val in input]
@@ -58,19 +58,14 @@ def def_rotation(input, reader):
     full_mtx = np.eye(4)
     full_mtx[0:3, 0:3] = rotate_mtx
     
-    def_transform(full_mtx, reader)
-
-def def_transform(mtx, reader):
-    # right multiply transformation matrix
-    reader.transform[-1] = reader.transform[-1] @ mtx
-
-def def_sphere(input, reader):
-    input = [float(val) for val in input]
-    sphere = {'loc':np.array(input[0:3]), 'radius':input[-1]}
-    reader.scene.spheres.append(sphere)
+    reader.transform[-1] = reader.transform[-1] @ full_mtx    
 
 def def_vertex(input, reader):
     reader.scene.vertices.append(tuple([float(val) for val in input]))
+
+def def_sphere(input, reader):
+    input = [float(val) for val in input]    
+    reader.scene.sphere_init(input, reader.transform[-1], reader.material.copy())
 
 def def_triangle(input, reader):
     input = [int(val) for val in input]

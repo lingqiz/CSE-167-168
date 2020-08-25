@@ -47,7 +47,12 @@ class Scene:
         self.camera = camera
 
     def triangle_init(self, input, mtx, material):
-        self.triangles.append({'ver_index':input, 'transform':mtx, **material})
+        triangle = {'ver_index':input, 'transform':mtx, **material}
+        self.triangles.append(triangle)
+
+    def sphere_init(self, input, mtx, material):
+        sphere = {'loc':np.array(input[0:3]), 'radius':input[-1], 'transform':mtx, **material}
+        self.spheres.append(sphere)
 
 
 class SceneReader:
@@ -87,5 +92,6 @@ class SceneReader:
                 self.material[arg_key] = np.array([float(val) for val in arg_list[1:]])
 
         scene_def.close()
+        self.scene.vertices = np.array(self.scene.vertices).T
         return self.scene
         
