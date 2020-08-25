@@ -41,8 +41,8 @@ class Scene:
         camera['fovx_rad'] = 2 * np.arctan(np.tan(camera['fovy_rad'] / 2) * self.width / self.height)
         camera['fovx'] = camera['fovx_rad'] / np.pi * 180.0
 
-        # camera in the +z direction
-        camera['dir'] = self.norm_vec(cam_at - cam_from)        
+        # camera in the -z direction
+        camera['dir'] = self.norm_vec(cam_from - cam_at)        
 
         # construct coordinate frame
         camera['u'] = self.norm_vec(np.cross(cam_up, camera['dir']))

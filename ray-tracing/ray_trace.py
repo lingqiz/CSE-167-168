@@ -48,7 +48,7 @@ class RayTracer:
         beta  = np.tan(camera['fovy_rad']/2) * \
                 (self.scene.height/2 - idh) / (self.scene.height/2)
         
-        direction = self.norm_vec(camera['dir'] + alpha * camera['u'] + beta * camera['v'])
+        direction = self.norm_vec(alpha * camera['u'] + beta * camera['v'] - camera['dir'])
         return (camera['loc'], direction)
 
     def single_ray(self, origin, direction, depth):
@@ -58,13 +58,17 @@ class RayTracer:
 
         return obj['ambient']
 
-    def intersection(self, origin, direction):        
+    def intersection(self, origin, direction):
+        # init   
         flag = False
         # ray = origin + t * direction
-        t = float('inf')        
+        t = float('inf')
+        
+        surf = None
+        obj  = None
 
         # ray and sphere intersection test
-        for sphere in self.scene.spheres:
+        for sphere in self.scene.spheres:            
             sloc = sphere['loc']
             radi = sphere['radius']
 
@@ -83,8 +87,8 @@ class RayTracer:
                 obj = sphere
                     
         # ray and triangle intersection test
-        for triangle in self.scene.triangles:
-            vertice = self.scene.vertices[triangle['ver_index']]
+        for triangle in self.scene.triangles:            
+            vertice = self.scene.vertices[:, triangle['ver_index']]
             A = vertice[:, 0]
             B = vertice[:, 1]
             C = vertice[:, 2]
@@ -98,9 +102,9 @@ class RayTracer:
                     / np.dot(direction, normal)
             if t_temp < 0 or t_temp > t:
                 continue
-
+                                    
             # test intersection inside the triangle
-            intersec = origin + t * direction
+            intersec = origin + t_temp * direction
             a = self.barycentric(normal, C - B, A - C, C, intersec)
             b = self.barycentric(normal, A - C, B - A, A, intersec)
             c = 1 - a - b
@@ -110,6 +114,6 @@ class RayTracer:
                 t = t_temp
 
                 surf = normal
-                obj = triangle
+                obj = triangle                
 
         return (flag, t, surf, obj)
