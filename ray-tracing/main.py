@@ -11,4 +11,5 @@ file_name = str(sys.argv[1])
 reader = scene.SceneReader(file_name)
 scene_config = reader.read_file()
 
-ray_trace.RayTracer(scene_config).ray_trace()
+ray_tracer = ray_trace.RayTracer(scene_config)
+ray_tracer.ray_trace()

@@ -90,6 +90,8 @@ class SceneReader:
             file_name = self.file_name
 
         scene_def = open(file_name, 'r')
+        
+        print('Load Scene Config')
         for line in scene_def:            
             if len(line) <= 1 or line[0] == "#":
                 continue

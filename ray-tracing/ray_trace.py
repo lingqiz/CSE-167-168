@@ -13,10 +13,19 @@ class RayTracer:
         
     def ray_trace(self):
         # pixel-wise ray tracing
+        denominator = (self.scene.height * self.scene.width) // 25
+        count = 0
+        print('Ray Tracing: ', end='', flush=True)
+
         for idh in range(0, self.scene.height):
             for idw in range(0, self.scene.width):
                 origin, direction = self.camera_ray(idh, idw)
                 self.image[idh, idw, :] = self.single_ray(origin, direction, depth=1)
+
+                count = count + 1
+                if count % denominator == 0:
+                    print('>', end=' ', flush=True)
+        print('Done! \n')
 
         plt.imshow(self.image)
         plt.show()
