@@ -58,12 +58,13 @@ class Scene:
         normal_vec = np.cross(vertice_1 - vertice_2, vertice_1 - vertice_3)
         normal_vec = normal_vec / np.linalg.norm(normal_vec)
 
-        triangle = {'ver_index':input, 'transform':mtx, 'surface':normal_vec, **material}
+        triangle = {'ver_index':input, 'transform':np.linalg.inv(mtx), 'surface':normal_vec, \
+                    'transformed_normal':(np.linalg.inv(mtx).T)[0:3, 0:3] @ normal_vec, **material}
 
         self.triangles.append(triangle)
 
     def sphere_init(self, input, mtx, material):
-        sphere = {'loc':np.array(input[0:3]), 'radius':input[-1], 'transform':mtx, **material}
+        sphere = {'loc':np.array(input[0:3]), 'radius':input[-1], 'transform':np.linalg.inv(mtx), **material}
         self.spheres.append(sphere)
 
 

@@ -1,4 +1,5 @@
 import numpy as np
+import multiprocessing
 import matplotlib.pyplot as plt
 
 class RayTracer:
@@ -13,13 +14,13 @@ class RayTracer:
         ap_normal = vec_cross / np.dot(vec_cross, edge2)
         ap_w = np.dot(-ap_normal, point)
 
-        return np.dot(ap_normal, intersec) + ap_w     
-
+        return np.dot(ap_normal, intersec) + ap_w
+ 
     def __init__(self, scene):
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
         
-    def ray_trace(self):
+    def ray_trace(self, show_image=True):
         # pixel-wise ray tracing
         denominator = (self.scene.height * self.scene.width) // 25
         count = 0
@@ -35,8 +36,9 @@ class RayTracer:
                     print('>', end=' ', flush=True)
         print('Done! \n')
 
-        plt.imshow(self.image)
-        plt.show()
+        if show_image:
+            plt.imshow(self.image)
+            plt.show()
 
     def camera_ray(self, idh, idw):
         idh = idh + 0.5
@@ -53,6 +55,8 @@ class RayTracer:
 
     def single_ray(self, origin, direction, depth):
         flag, t, surf, obj = self.intersection(origin, direction)
+        intersection = origin + t * direction
+
         if not flag:
             return np.zeros([1, 3])
 
@@ -67,8 +71,15 @@ class RayTracer:
         surf = None
         obj  = None
 
+        origin_world = origin
+        direction_world = direction
         # ray and sphere intersection test
-        for sphere in self.scene.spheres:            
+        for sphere in self.scene.spheres:
+            # apply transformation to the ray
+            # 'transform' is the pre-computed inverse transformation
+            origin = (sphere['transform'] @ np.append(origin_world, 1))[0:3]
+            direction = (sphere['transform'] @ np.append(direction_world, 0))[0:3]
+
             sloc = sphere['loc']
             radi = sphere['radius']
 
@@ -82,12 +93,16 @@ class RayTracer:
             if len(root) > 0 and root[0] < t:
                 flag = True
                 t = root[0]
-                                
-                surf = self.norm_vec(origin + t * direction - sloc)
+                                                
+                surf = self.norm_vec((sphere['transform'].T)[0:3, 0:3] @ \
+                    (origin + t * direction - sloc))
                 obj = sphere
                     
         # ray and triangle intersection test
-        for triangle in self.scene.triangles:            
+        for triangle in self.scene.triangles:
+            origin = (triangle['transform'] @ np.append(origin_world, 1))[0:3]
+            direction = (triangle['transform'] @ np.append(direction_world, 0))[0:3]
+
             vertice = self.scene.vertices[:, triangle['ver_index']]
             A = vertice[:, 0]
             B = vertice[:, 1]
@@ -113,7 +128,7 @@ class RayTracer:
                 flag = True
                 t = t_temp
 
-                surf = normal
+                surf = triangle['transformed_normal']
                 obj = triangle                
 
         return (flag, t, surf, obj)
