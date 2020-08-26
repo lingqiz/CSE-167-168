@@ -60,7 +60,10 @@ class RayTracer:
         if not flag:
             return np.zeros([1, 3])
 
-        return obj['ambient']
+        obj_color = obj['ambient'] + obj['emission']
+        # add color from light source (shading model)
+        # add color from mirror reflection
+        return obj_color
 
     def intersection(self, origin, direction):
         # init   
