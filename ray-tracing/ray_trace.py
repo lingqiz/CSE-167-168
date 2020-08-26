@@ -68,7 +68,7 @@ class RayTracer:
         image_rows = []
         with multiprocessing.Pool(num_process) as pool:        
             for row in tqdm(pool.imap(self.render_row, range(0, self.scene.height), \
-                        chunksize=10), total=self.scene.height):                            
+                        chunksize=4), total=self.scene.height):                            
                 image_rows.append(row)
             
         for idh in range(0, self.scene.height):
