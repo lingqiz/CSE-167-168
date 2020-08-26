@@ -96,11 +96,12 @@ class RayTracer:
 
         obj_color = obj['ambient'] + obj['emission']
         for light in self.scene.lights:
-            obj_color += self.light_shading(light, -direction, intersection, surf, obj)
+            obj_color += self.light_shading(light, self.scene.light_attenu, \
+                        -direction, intersection, surf, obj)
         # add color from mirror reflection
         return obj_color
 
-    def light_shading(self, light, eye_dir, vertex, surface, obj):
+    def light_shading(self, light, atten, eye_dir, vertex, surface, obj):
         light_dir, light_spc = light
         # directional light
         if light_dir[-1] == 0:
@@ -129,7 +130,8 @@ class RayTracer:
                 return np.zeros(3)
 
             half_vec = self.norm_vec(light_dir + eye_dir)
-            return self.shading_compute(light_dir, light_spc, surface, half_vec, obj)
+            atten_cst = atten[0] + atten[1] * light_dir + atten[2] * (light_dir ** 2)
+            return self.shading_compute(light_dir, light_spc/atten_cst, surface, half_vec, obj)
 
         warnings.warn('Light Source Type Undefined', RuntimeWarning)        
 
