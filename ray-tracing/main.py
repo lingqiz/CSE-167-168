@@ -6,7 +6,7 @@ import multiprocessing
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':    
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         raise ValueError('Incorrect Number of Input Argument')
 
     file_name = str(sys.argv[1])
@@ -14,8 +14,10 @@ if __name__ == '__main__':
     scene_config = reader.read_file()
 
     ray_tracer = ray_trace.RayTracer(scene_config)
-    ray_tracer.ray_trace(show_image=True)
-        
-    # ray_tracer.ray_trace_parallel(show_image=True)
+
+    if int(sys.argv[2]):
+        ray_tracer.ray_trace_parallel(show_image=True)
+    else:       
+        ray_tracer.ray_trace(show_image=True)
     
     
