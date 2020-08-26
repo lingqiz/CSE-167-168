@@ -1,5 +1,6 @@
 import numpy as np
 import multiprocessing
+import warnings
 import matplotlib.pyplot as plt
 
 class RayTracer:
@@ -15,13 +16,23 @@ class RayTracer:
         ap_w = np.dot(-ap_normal, point)
 
         return np.dot(ap_normal, intersec) + ap_w
+
+    @staticmethod
+    def shading_compute(light_dir, light_color, normal, half_vec, obj):
+        n_dot_l = np.max([np.dot(normal, light_dir), 0.0])
+        lambert = obj['diffuse'] * light_color * n_dot_l
+
+        n_dot_h = np.max([np.dot(normal, half_vec), 0.0])
+        phong = obj['specular'] * light_color * (n_dot_h ** obj['shininess'])
+
+        return lambert + phong
  
     def __init__(self, scene):
         self.scene = scene
-        self.image = np.zeros([scene.height, scene.width, 3])
+        self.image = np.zeros([scene.height, scene.width, 3])    
         
-    def ray_trace(self, show_image=True):
-        # pixel-wise ray tracing
+    # pixel-wise ray tracing
+    def ray_trace(self, show_image=True):    
         denominator = self.scene.height // 25
         count = 0
         print('Ray Tracing: ', end='', flush=True)
@@ -39,6 +50,7 @@ class RayTracer:
             plt.imshow(self.image)
             plt.show()
     
+    # pixel-wise ray tracing with parallel processing
     def ray_trace_parallel(self, num_process = 4, show_image=True):
         print('Parallel Ray Tracing')
 
@@ -83,9 +95,43 @@ class RayTracer:
             return np.zeros([1, 3])
 
         obj_color = obj['ambient'] + obj['emission']
-        # add color from light source (shading model)
+        for light in self.scene.lights:
+            obj_color += self.light_shading(light, -direction, intersection, surf, obj)
         # add color from mirror reflection
         return obj_color
+
+    def light_shading(self, light, eye_dir, vertex, surface, obj):
+        light_dir, light_spc = light
+        # directional light
+        if light_dir[-1] == 0:
+            light_dir = self.norm_vec(light_dir[0:3])
+
+            # visibility test
+            # shadow if light source is blocked
+            flag, _, _, _ = self.intersection(vertex + 1e-6 * light_dir, light_dir)
+            if flag:
+                return np.zeros(3)
+            
+            half_vec = self.norm_vec(light_dir + eye_dir)
+            return self.shading_compute(light_dir, light_spc, surface, half_vec, obj)
+
+        # point light
+        if light_dir[-1] == 1:
+            light_pos = light_dir[0:3] / light_dir[-1]
+
+            light_dir = light_pos - vertex
+            light_dist = np.linalg.norm(light_dir)
+            light_dir = light_dir / light_dist
+
+            # visibility test
+            flag, t_block, _, _ = self.intersection(vertex + 1e-6 * light_dir, light_dir)
+            if flag and t_block < light_dist:
+                return np.zeros(3)
+
+            half_vec = self.norm_vec(light_dir + eye_dir)
+            return self.shading_compute(light_dir, light_spc, surface, half_vec, obj)
+
+        warnings.warn('Light Source Type Undefined', RuntimeWarning)        
 
     def intersection(self, origin, direction):
         # init   

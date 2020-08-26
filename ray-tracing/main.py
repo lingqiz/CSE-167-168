@@ -14,8 +14,8 @@ if __name__ == '__main__':
     scene_config = reader.read_file()
 
     ray_tracer = ray_trace.RayTracer(scene_config)
-    # ray_tracer.ray_trace(show_image=True)
+    ray_tracer.ray_trace(show_image=True)
         
-    ray_tracer.ray_trace_parallel(show_image=True)
+    # ray_tracer.ray_trace_parallel(show_image=True)
     
     

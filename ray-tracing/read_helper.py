@@ -70,3 +70,7 @@ def def_sphere(input, reader):
 def def_triangle(input, reader):
     input = [int(val) for val in input]
     reader.scene.triangle_init(input, reader.transform[-1], reader.material.copy())
+
+def def_attenuation(input, reader):
+    input = [float(val) for val in input]
+    reader.scene.light_attenu = np.array(input)
