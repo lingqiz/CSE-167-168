@@ -31,8 +31,14 @@ class RayTracer:
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])    
         
+    def ray_trace(self, parallel=False, show_image=True):
+        if parallel:
+            self.ray_trace_parallel(show_image)
+        else:
+            self.ray_trace_serial(show_image)
+
     # pixel-wise ray tracing
-    def ray_trace(self, show_image=True):    
+    def ray_trace_serial(self, show_image=True):    
         denominator = self.scene.height // 25
         count = 0
         print('Ray Tracing: ', end='', flush=True)

@@ -14,10 +14,5 @@ if __name__ == '__main__':
     scene_config = reader.read_file()
 
     ray_tracer = ray_trace.RayTracer(scene_config)
-
-    if int(sys.argv[2]):
-        ray_tracer.ray_trace_parallel(show_image=True)
-    else:       
-        ray_tracer.ray_trace(show_image=True)
-    
-    
+    ray_tracer.ray_trace(int(sys.argv[2]) != 0, show_image=True)
+        
