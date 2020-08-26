@@ -34,7 +34,7 @@ class RayTracer:
         
     def ray_trace(self, parallel=False, show_image=True):
         if parallel:
-            self.ray_trace_parallel(num_process=8, show_image=show_image)
+            self.ray_trace_parallel(show_image=show_image)
         else:
             self.ray_trace_serial(show_image=show_image)
 
@@ -58,13 +58,13 @@ class RayTracer:
             plt.show()
     
     # pixel-wise ray tracing with parallel processing
-    def ray_trace_parallel(self, num_process=8, show_image=True):
+    def ray_trace_parallel(self, num_process=4, show_image=True):
         print('Parallel Ray Tracing')
 
         image_rows = []
         with multiprocessing.Pool(num_process) as pool:        
             for row in tqdm(pool.imap(self.render_row, range(0, self.scene.height), \
-                        chunksize=5), total=self.scene.height):                            
+                        chunksize=10), total=self.scene.height):                            
                 image_rows.append(row)
             
         for idh in range(0, self.scene.height):
