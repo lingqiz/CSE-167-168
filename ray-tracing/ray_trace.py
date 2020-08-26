@@ -158,7 +158,7 @@ class RayTracer:
                 return np.zeros(3)
 
             half_vec = self.norm_vec(light_dir + eye_dir)
-            atten_cst = atten[0] + atten[1] * light_dir + atten[2] * (light_dir ** 2)
+            atten_cst = atten[0] + atten[1] * light_dist + atten[2] * (light_dist ** 2)
             return self.shading_compute(light_dir, light_spc/atten_cst, surface, half_vec, obj)
 
         warnings.warn('Light Source Type Undefined', RuntimeWarning)        
