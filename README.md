@@ -4,6 +4,8 @@
 ### Simple OpenGL pipeline
 * Transformation
 * Phong shading model
+
+#### Example Scene
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/hw2.png" width="512">
 
 ---
@@ -17,4 +19,6 @@
 #### Usage
 - `python main.py 'scene_file_path' #num_of_process`
 - `scene_file` defines camera, light, objects and their surface properties
+
+#### Example Scene
 ---

@@ -30,6 +30,8 @@ class RayTracer:
         return lambert + phong
  
     def __init__(self, scene):
+        self.zero_thres = 1e-10
+        self.delta_move = 1e-6
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
 
@@ -108,24 +110,24 @@ class RayTracer:
         intersection = origin + t * direction
 
         if not flag:
-            return np.zeros([1, 3])
+            return np.zeros(3)
 
-        obj_color = obj['ambient'] + obj['emission']
-        eye_dir = -direction
+        obj_color = obj['ambient'] + obj['emission']        
         for light in self.scene.lights:
             obj_color += self.light_shading(light, self.scene.light_attenu, \
-                        eye_dir, intersection, surf, obj)
+                        -direction, intersection, surf, obj)
         
         # resursive ray tracing for specular reflectance
-        if np.abs(np.sum(obj['specular'])) < (10 ** -10):
+        if np.abs(np.sum(obj['specular'])) < self.zero_thres:
             return obj_color
 
-        eye_surf = surf * np.dot(eye_dir, surf)
-        eye_orth = eye_dir - eye_surf
-        mirr_dir = self.norm_vec(eye_surf - eye_orth)
-        ref_color = self.single_ray(intersection, mirr_dir, depth + 1)
-
-        return obj_color + obj['specular'] * ref_color
+        if np.abs(np.linalg.norm(direction) - 1.0) > self.zero_thres \
+             or np.abs(np.linalg.norm(surf) - 1.0) > self.zero_thres:              
+            raise ValueError('Vector not normalized')
+        
+        mirror_dir = direction - 2 * np.dot(direction, surf) * surf
+        return obj_color + \
+            obj['specular'] * self.single_ray(intersection + self.delta_move * mirror_dir, mirror_dir, depth + 1)
 
     def light_shading(self, light, atten, eye_dir, vertex, surface, obj):
         light_dir, light_spc = light
@@ -135,7 +137,7 @@ class RayTracer:
 
             # visibility test
             # shadow if light source is blocked
-            flag, _, _, _ = self.intersection(vertex + 1e-3 * light_dir, light_dir)
+            flag, _, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
             if flag:
                 return np.zeros(3)
             
@@ -151,7 +153,7 @@ class RayTracer:
             light_dir = light_dir / light_dist
 
             # visibility test
-            flag, t_block, _, _ = self.intersection(vertex + 1e-3 * light_dir, light_dir)
+            flag, t_block, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
             if flag and t_block < light_dist:
                 return np.zeros(3)
 
@@ -210,7 +212,7 @@ class RayTracer:
             normal = triangle['surface']
             
             # intersection test
-            if np.abs(np.dot(direction, normal)) < (10 ** -10):
+            if np.abs(np.dot(direction, normal)) < self.zero_thres:
                 continue            
             t_temp = (np.dot(A, normal) - np.dot(origin, normal)) \
                     / np.dot(direction, normal)

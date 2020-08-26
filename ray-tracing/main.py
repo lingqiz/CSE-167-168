@@ -14,4 +14,6 @@ if __name__ == '__main__':
 
     ray_tracer = ray_trace.RayTracer(scene_config)
     ray_tracer.ray_trace(parallel=True, show_image=True, num_process=int(sys.argv[2]))
+
+    np.save('./image_numpy.npy', ray_tracer.image)
     ray_tracer.save_image()
