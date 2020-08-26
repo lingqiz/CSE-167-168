@@ -4,7 +4,8 @@
 * Phong shading model
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/hw2.png" width="512">
 
-Simple ray tracer in Python 
+---
+### Simple ray tracer in Python 
 * Effect of shadow (visibility test)
 * Phong shading model
 * Mirror reflection with resursive ray tracing
