@@ -55,11 +55,11 @@ class Scene:
         vertice_2 = np.array(self.vertices[input[1]])
         vertice_3 = np.array(self.vertices[input[2]])
 
-        normal_vec = np.cross(vertice_1 - vertice_2, vertice_1 - vertice_3)
-        normal_vec = normal_vec / np.linalg.norm(normal_vec)
+        normal_vec = self.norm_vec(np.cross(vertice_1 - vertice_2, vertice_1 - vertice_3))
+        transformed_normal = self.norm_vec((np.linalg.inv(mtx).T)[0:3, 0:3] @ normal_vec)
 
         triangle = {'ver_index':input, 'transform':np.linalg.inv(mtx), 'surface':normal_vec, \
-                    'transformed_normal':(np.linalg.inv(mtx).T)[0:3, 0:3] @ normal_vec, **material}
+                    'transformed_normal':transformed_normal, **material}
 
         self.triangles.append(triangle)
 
