@@ -33,9 +33,9 @@ class RayTracer:
         
     def ray_trace(self, parallel=False, show_image=True):
         if parallel:
-            self.ray_trace_parallel(show_image)
+            self.ray_trace_parallel(num_process=4, show_image=show_image)
         else:
-            self.ray_trace_serial(show_image)
+            self.ray_trace_serial(show_image=show_image)
 
     # pixel-wise ray tracing
     def ray_trace_serial(self, show_image=True):    
