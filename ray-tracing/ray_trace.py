@@ -85,7 +85,7 @@ class RayTracer:
         image_row = np.zeros([self.scene.width, 3])
         for idw in range(0, self.scene.width):
             origin, direction = self.camera_ray(idh, idw)        
-            image_row[idw, :] = self.single_ray(origin, direction, depth=1)
+            image_row[idw, :] = self.single_ray(origin, direction, depth=0)
 
         return image_row
 
