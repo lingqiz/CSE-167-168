@@ -22,23 +22,45 @@ class RayTracer:
         
     def ray_trace(self, show_image=True):
         # pixel-wise ray tracing
-        denominator = (self.scene.height * self.scene.width) // 25
+        denominator = self.scene.height // 25
         count = 0
         print('Ray Tracing: ', end='', flush=True)
 
         for idh in range(0, self.scene.height):
-            for idw in range(0, self.scene.width):
-                origin, direction = self.camera_ray(idh, idw)
-                self.image[idh, idw, :] = self.single_ray(origin, direction, depth=1)
+            self.image[idh, :, :] = self.render_row(idh)
+            
+            count = count + 1
+            if count % denominator == 0:
+                print('>', end=' ', flush=True)
 
-                count = count + 1
-                if count % denominator == 0:
-                    print('>', end=' ', flush=True)
         print('Done! \n')
 
         if show_image:
             plt.imshow(self.image)
             plt.show()
+    
+    def ray_trace_parallel(self, num_process = 4, show_image=True):
+        print('Parallel Ray Tracing')
+
+        image_rows = []
+        with multiprocessing.Pool(num_process) as pool:        
+            image_rows = pool.map(self.render_row, range(0, self.scene.height))    
+            
+        for idh in range(0, self.scene.height):
+            self.image[idh, :, :] = image_rows[idh]
+
+        if show_image:        
+            plt.imshow(self.image)
+            plt.show()
+    
+    # run ray tracing for each row
+    def render_row(self, idh):
+        image_row = np.zeros([self.scene.width, 3])
+        for idw in range(0, self.scene.width):
+            origin, direction = self.camera_ray(idh, idw)        
+            image_row[idw, :] = self.single_ray(origin, direction, depth=1)
+
+        return image_row
 
     def camera_ray(self, idh, idw):
         idh = idh + 0.5
