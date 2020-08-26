@@ -135,7 +135,7 @@ class RayTracer:
 
             # visibility test
             # shadow if light source is blocked
-            flag, _, _, _ = self.intersection(vertex + 1e-6 * light_dir, light_dir)
+            flag, _, _, _ = self.intersection(vertex + 1e-3 * light_dir, light_dir)
             if flag:
                 return np.zeros(3)
             
@@ -151,7 +151,7 @@ class RayTracer:
             light_dir = light_dir / light_dist
 
             # visibility test
-            flag, t_block, _, _ = self.intersection(vertex + 1e-6 * light_dir, light_dir)
+            flag, t_block, _, _ = self.intersection(vertex + 1e-3 * light_dir, light_dir)
             if flag and t_block < light_dist:
                 return np.zeros(3)
 

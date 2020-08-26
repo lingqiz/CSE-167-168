@@ -1,4 +1,6 @@
 ## UCSD CSE 167x (edX), Computer Graphics
+
+---
 ### Simple OpenGL pipeline
 * Transformation
 * Phong shading model
@@ -15,3 +17,4 @@
 #### Usage
 - `python main.py 'scene_file_path' #num_of_process`
 - `scene_file` defines camera, light, objects and their surface properties
+---

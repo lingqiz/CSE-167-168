@@ -4,7 +4,6 @@ import scene
 import ray_trace
 import multiprocessing
 
-
 if __name__ == '__main__':    
     if len(sys.argv) != 3:
         raise ValueError('Incorrect Number of Input Argument')
