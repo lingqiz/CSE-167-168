@@ -12,7 +12,7 @@ class Scene:
         # basic setup
         self.width = 0
         self.height = 0
-        self.depth = 5
+        self.max_depth = 5
         self.output_name = 'ray_tracing'
         
         # default attenuation

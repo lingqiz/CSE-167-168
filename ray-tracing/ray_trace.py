@@ -94,6 +94,9 @@ class RayTracer:
         return (camera['loc'], direction)
 
     def single_ray(self, origin, direction, depth):
+        if depth > self.scene.max_depth:
+            return np.zeros(3)
+
         flag, t, surf, obj = self.intersection(origin, direction)
         intersection = origin + t * direction
 
@@ -101,11 +104,21 @@ class RayTracer:
             return np.zeros([1, 3])
 
         obj_color = obj['ambient'] + obj['emission']
+        eye_dir = -direction
         for light in self.scene.lights:
             obj_color += self.light_shading(light, self.scene.light_attenu, \
-                        -direction, intersection, surf, obj)
-        # add color from mirror reflection
-        return obj_color
+                        eye_dir, intersection, surf, obj)
+        
+        # resursive ray tracing for specular reflectance
+        if np.abs(np.sum(obj['specular'])) < (10 ** -10):
+            return obj_color
+
+        eye_surf = surf * np.dot(eye_dir, surf)
+        eye_orth = eye_dir - eye_surf
+        mirr_dir = self.norm_vec(eye_surf - eye_orth)
+        ref_color = self.single_ray(intersection, mirr_dir, depth + 1)
+
+        return obj_color + obj['specular'] * ref_color
 
     def light_shading(self, light, atten, eye_dir, vertex, surface, obj):
         light_dir, light_spc = light

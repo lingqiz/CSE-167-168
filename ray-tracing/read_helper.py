@@ -8,7 +8,7 @@ def def_cam(input, reader):
     reader.scene.cam_init(input)
 
 def def_depth(input, reader):
-    reader.scene.depth = int(input[-1])
+    reader.scene.max_depth = int(input[-1])
 
 def def_filename(input, reader):
     reader.scene.output_name = input[-1]
