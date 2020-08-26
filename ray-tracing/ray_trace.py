@@ -31,7 +31,7 @@ class RayTracer:
  
     def __init__(self, scene):
         self.zero_thres = 1e-10
-        self.delta_move = 1e-6
+        self.delta_move = 1e-4
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
 
