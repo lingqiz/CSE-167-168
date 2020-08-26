@@ -1,6 +1,7 @@
 import numpy as np
 import multiprocessing
 import warnings
+import matplotlib
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
@@ -30,11 +31,14 @@ class RayTracer:
  
     def __init__(self, scene):
         self.scene = scene
-        self.image = np.zeros([scene.height, scene.width, 3])    
+        self.image = np.zeros([scene.height, scene.width, 3])
+
+    def save_image(self):
+        matplotlib.image.imsave('./' + self.scene.output_name, self.image)
         
-    def ray_trace(self, parallel=False, show_image=True):
+    def ray_trace(self, parallel=False, show_image=True, num_process=2):
         if parallel:
-            self.ray_trace_parallel(show_image=show_image)
+            self.ray_trace_parallel(num_process=num_process, show_image=show_image)
         else:
             self.ray_trace_serial(show_image=show_image)
 
@@ -58,7 +62,7 @@ class RayTracer:
             plt.show()
     
     # pixel-wise ray tracing with parallel processing
-    def ray_trace_parallel(self, num_process=4, show_image=True):
+    def ray_trace_parallel(self, num_process=2, show_image=True):
         print('Parallel Ray Tracing')
 
         image_rows = []

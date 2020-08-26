@@ -13,7 +13,7 @@ class Scene:
         self.width = 0
         self.height = 0
         self.max_depth = 5
-        self.output_name = 'ray_tracing'
+        self.output_name = 'ray_tracing.png'
         
         # default attenuation
         self.light_attenu = np.array([1.0, 0.0, 0.0])        
