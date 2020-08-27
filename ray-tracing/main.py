@@ -11,7 +11,7 @@ if __name__ == '__main__':
     file_name = str(sys.argv[1])
     reader = scene.SceneReader(file_name)
     scene_config = reader.read_file()
-
+    
     ray_tracer = ray_trace.RayTracer(scene_config)
     ray_tracer.ray_trace(parallel=True, show_image=True, num_process=int(sys.argv[2]))
 

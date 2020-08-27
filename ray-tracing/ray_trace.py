@@ -103,15 +103,24 @@ class RayTracer:
         return (camera['loc'], direction)
 
     def single_ray(self, origin, direction, depth):
+        # find intersection for primary ray
         if depth > self.scene.max_depth:
             return np.zeros(3)
 
-        flag, t, surf, obj = self.intersection(origin, direction)
+        # intersection test for geometric primitives
+        flag, t, surf, obj, inside = self.intersection(origin, direction)
         intersection = origin + t * direction
 
+        # return 0 if no intersection
         if not flag:
             return np.zeros(3)
 
+        # special case for transparent object
+        if 'transparent' in obj:
+            print('ref')
+            return self.light_refraction(direction, intersection, surf, obj['transparent'], inside, depth)
+
+        # apply shading model        
         obj_color = obj['ambient'] + obj['emission']        
         for light in self.scene.lights:
             obj_color += self.light_shading(light, self.scene.light_attenu, \
@@ -129,6 +138,20 @@ class RayTracer:
         mirror_dir = direction - 2 * np.dot(direction, surf) * surf
         return obj_color + \
             obj['specular'] * self.single_ray(intersection + self.delta_move * mirror_dir, mirror_dir, depth + 1)
+    
+    def light_refraction(self, incident, intersec, normal, refra_index, inside, depth):
+        if np.abs(np.linalg.norm(incident) - 1.0) > self.zero_thres \
+             or np.abs(np.linalg.norm(normal) - 1.0) > self.zero_thres:              
+            raise ValueError('Vector not normalized')
+
+        if np.dot(incident, -normal) < (0 - self.zero_thres):
+            raise ValueError('Incorrect vector direction')
+        
+        i = incident
+        n = -normal
+
+        return np.zeros(3)
+        # return self.single_ray(intersec + self.delta_move * incident, incident, depth + 1)        
 
     def light_shading(self, light, atten, eye_dir, vertex, surface, obj):
         light_dir, light_spc = light
@@ -138,7 +161,7 @@ class RayTracer:
 
             # visibility test
             # shadow if light source is blocked
-            flag, _, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
+            flag, _, _, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
             if flag:
                 return np.zeros(3)
             
@@ -154,7 +177,7 @@ class RayTracer:
             light_dir = light_dir / light_dist
 
             # visibility test
-            flag, t_block, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
+            flag, t_block, _, _, _ = self.intersection(vertex + self.delta_move * light_dir, light_dir)
             if flag and t_block < light_dist:
                 return np.zeros(3)
 
@@ -172,34 +195,11 @@ class RayTracer:
         
         surf = None
         obj  = None
+        inside = None
 
         origin_world = origin
         direction_world = direction
-        # ray and sphere intersection test
-        for sphere in self.scene.spheres:
-            # apply transformation to the ray
-            # 'transform' is the pre-computed inverse transformation
-            origin = (sphere['transform'] @ np.append(origin_world, 1))[0:3]
-            direction = (sphere['transform'] @ np.append(direction_world, 0))[0:3]
-
-            sloc = sphere['loc']
-            radi = sphere['radius']
-
-            a = np.dot(direction, direction)
-            b = 2 * np.dot(direction, origin - sloc)
-            c = np.dot(origin - sloc, origin - sloc) - (radi ** 2)
-
-            root = np.roots([a, b, c])
-            root = np.sort(root[np.logical_and(np.isreal(root), root > 0)])
             
-            if len(root) > 0 and root[0] < t:
-                flag = True
-                t = root[0]
-                                                
-                surf = self.norm_vec((sphere['transform'].T)[0:3, 0:3] @ \
-                    (origin + t * direction - sloc))
-                obj = sphere
-                    
         # ray and triangle intersection test
         for triangle in self.scene.triangles:
             origin = (triangle['transform'] @ np.append(origin_world, 1))[0:3]
@@ -233,6 +233,41 @@ class RayTracer:
                 t = t_temp
 
                 surf = triangle['transformed_normal']
-                obj = triangle                
+                obj = triangle
 
-        return (flag, t, surf, obj)
+            # ray and sphere intersection test
+        for sphere in self.scene.spheres:
+            # apply transformation to the ray
+            # 'transform' is the pre-computed inverse transformation
+            origin = (sphere['transform'] @ np.append(origin_world, 1))[0:3]
+            direction = (sphere['transform'] @ np.append(direction_world, 0))[0:3]
+
+            sloc = sphere['loc']
+            radi = sphere['radius']
+
+            a = np.dot(direction, direction)
+            b = 2 * np.dot(direction, origin - sloc)
+            c = np.dot(origin - sloc, origin - sloc) - (radi ** 2)
+
+            root = np.roots([a, b, c])
+            root = np.sort(np.unique(root[np.isreal(root)]))            
+            
+            # ignore tangent case
+            if len(root) > 0 and root[1] > 0 and root[0] < t:
+                flag = True
+                # outside
+                if np.prod(root) > 0:
+                    t = root[0]                                                
+                    surf = self.norm_vec((sphere['transform'].T)[0:3, 0:3] @ \
+                        (origin + t * direction - sloc))
+                    inside = False
+                # inside
+                elif np.prod(root) < 0:
+                    t = root[1]
+                    surf = -self.norm_vec((sphere['transform'].T)[0:3, 0:3] @ \
+                        (origin + t * direction - sloc))
+                    inside = True
+
+                obj = sphere
+
+        return (flag, t, surf, obj, inside)

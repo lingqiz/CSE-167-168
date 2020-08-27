@@ -74,3 +74,7 @@ def def_triangle(input, reader):
 def def_attenuation(input, reader):
     input = [float(val) for val in input]
     reader.scene.light_attenu = np.array(input)
+
+def def_trans(input, reader):
+    input = float(input[0])
+    reader.scene.spheres[-1]['transparent'] = input

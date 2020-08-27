@@ -74,7 +74,7 @@ class SceneReader:
     def_mapping = {'size':def_size, 'camera':def_cam, 'maxdepth':def_depth, 'output':def_filename, \
         'directional':def_dirlight, 'point':def_ptlight, 'pushTransform':def_push, 'popTransform':def_pop, \
         'translate':def_translate, 'rotate':def_rotation, 'scale':def_scale, 'sphere': def_sphere, \
-        'tri':def_triangle, 'vertex':def_vertex, 'attenuation':def_attenuation}
+        'tri':def_triangle, 'vertex':def_vertex, 'attenuation':def_attenuation, 'transparent': def_trans}
     
     def __init__(self, file_name):
         # assume scene file is in current dir
