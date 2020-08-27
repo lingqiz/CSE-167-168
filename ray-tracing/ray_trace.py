@@ -116,8 +116,7 @@ class RayTracer:
             return np.zeros(3)
 
         # special case for transparent object
-        if 'transparent' in obj:
-            print('ref')
+        if 'transparent' in obj:            
             return self.light_refraction(direction, intersection, surf, obj['transparent'], inside, depth)
 
         # apply shading model        
@@ -147,11 +146,21 @@ class RayTracer:
         if np.dot(incident, -normal) < (0 - self.zero_thres):
             raise ValueError('Incorrect vector direction')
         
+        # n1/n2: ratio of refractive index
+        if inside:
+            ratio = refra_index
+        else:
+            ratio = 1.0 / refra_index
+
+        # refraction: Snell's law in vector form
         i = incident
         n = -normal
-
-        return np.zeros(3)
-        # return self.single_ray(intersec + self.delta_move * incident, incident, depth + 1)        
+        t = np.sqrt(1 - (ratio ** 2) * (1 - (np.dot(n, i) ** 2))) * n + \
+            ratio * (i - np.dot(n, i) * n)
+        t = self.norm_vec(t)
+        
+        # recursive ray tracing
+        return self.single_ray(intersec + self.delta_move * t, t, depth + 1)        
 
     def light_shading(self, light, atten, eye_dir, vertex, surface, obj):
         light_dir, light_spc = light

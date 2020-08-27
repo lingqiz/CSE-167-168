@@ -19,10 +19,12 @@
 #### Usage
 - `python main.py 'scene_file_path' #num_of_process`
 - `scene_file` defines camera, light, objects and their surface properties
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/ray_tracer.png" width="512">
 
 #### Example Scene
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-1.png" width="512">
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-2.png" width="512">
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-3.png" width="512">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-4.png" width="512">
 
 ---

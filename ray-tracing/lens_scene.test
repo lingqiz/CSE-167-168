@@ -1,0 +1,86 @@
+size 1024 768
+#size 160 120
+
+output lens_scene.png
+camera -0.3 -2.25 1 0 0 0 0 0 1 45
+maxdepth 4
+
+ambient 0 0 0
+directional 0 0.1 1 .9 .9 .9
+
+vertex 0 0 0
+vertex 0.5 0 0
+vertex 1 0 0
+vertex 0 0.5 0
+vertex 0.5 0.5 0
+vertex 1 0.5 0
+vertex 0 1 0
+vertex 0.5 1 0
+vertex 1 1 0
+vertex -0.5 0 0
+vertex -1 0 0
+vertex -0.5 0.5 0
+vertex -1 0.5 0
+vertex -0.5 1 0
+vertex -1 1 0
+vertex 0 -0.5 0
+vertex 0.5 -0.5 0
+vertex 1 -0.5 0
+vertex 0 -1 0
+vertex 0.5 -1 0
+vertex 1 -1 0
+vertex -0.5 -0.5 0
+vertex -1 -0.5 0
+vertex -0.5 -1 0
+vertex -1 -1 0
+
+diffuse 0.1 0.1 0.1
+
+tri 1 3 0
+tri 2 4 1
+tri 4 6 3
+tri 5 7 4
+tri 0 11 9
+tri 9 12 10
+tri 3 13 11
+tri 11 14 12
+tri 16 0 15
+tri 17 1 16
+tri 19 15 18
+tri 20 16 19
+tri 15 9 21
+tri 21 10 22
+tri 18 21 23
+tri 23 22 24
+
+diffuse 1 1 1
+
+tri 1 4 3
+tri 2 5 4
+tri 4 7 6
+tri 5 8 7
+tri 0 3 11
+tri 9 11 12
+tri 3 6 13
+tri 11 13 14
+tri 16 1 0
+tri 17 2 1
+tri 19 16 15
+tri 20 17 16
+tri 15 0 9
+tri 21 9 10
+tri 18 15 21
+tri 23 21 22
+
+
+diffuse 0.4 0.4 0.4
+specular 0.4 0.4 0.4
+shininess 100
+sphere 0.6 0 0.3 0.25
+
+diffuse 0.8 0.1 0.1
+sphere -0.3 0.75 0.1 0.1
+
+sphere -0.3 -0.5 0.42 0.4
+# make the last sphere transparent with refractive index
+transparent 1.10
