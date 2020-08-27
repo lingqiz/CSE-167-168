@@ -31,7 +31,7 @@ class RayTracer:
  
     def __init__(self, scene):
         self.zero_thres = 1e-10
-        self.delta_move = 1e-4
+        self.delta_move = 1e-5
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
 
@@ -70,7 +70,7 @@ class RayTracer:
         image_rows = []
         with multiprocessing.Pool(num_process) as pool:        
             for row in tqdm(pool.imap(self.render_row, range(0, self.scene.height), \
-                        chunksize=4), total=self.scene.height):                            
+                        chunksize=5), total=self.scene.height):                            
                 image_rows.append(row)
             
         for idh in range(0, self.scene.height):
