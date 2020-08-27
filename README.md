@@ -6,7 +6,7 @@
 * Phong shading model
 
 #### Example Scene
-<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/hw2.png" width="512">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="512">
 
 ---
 ### Simple ray tracer in Python 
@@ -21,7 +21,7 @@
 - `scene_file` defines camera, light, objects and their surface properties
 
 #### Example Scene
-<img src="https://github.com/lingqiz/CSE-167x/tree/master/ray-tracing/hw3-scenes/scene4-specular.png" width="512">
-<img src="https://github.com/lingqiz/CSE-167x/tree/master/ray-tracing/hw3-scenes/scene6.png" width="512">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-1.png" width="512">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-2.png" width="512">
 
 ---
