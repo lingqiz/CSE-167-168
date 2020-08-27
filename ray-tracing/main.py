@@ -13,7 +13,7 @@ if __name__ == '__main__':
     scene_config = reader.read_file()
     
     ray_tracer = ray_trace.RayTracer(scene_config)
-    ray_tracer.ray_trace(parallel=True, show_image=True, num_process=int(sys.argv[2]))
+    ray_tracer.ray_trace(parallel=True, show_image=False, num_process=int(sys.argv[2]))
 
     # save the image both as npy and png file 
     np.save('./render_image.npy', ray_tracer.image)
