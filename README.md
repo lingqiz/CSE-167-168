@@ -21,4 +21,6 @@
 - `scene_file` defines camera, light, objects and their surface properties
 
 #### Example Scene
+<img src="https://github.com/lingqiz/CSE-167x/tree/master/ray-tracing/hw3-scenes/scene4-specular.png" width="512">
+<img src="https://github.com/lingqiz/CSE-167x/tree/master/ray-tracing/hw3-scenes/scene6.png" width="512">
 ---

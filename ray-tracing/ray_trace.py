@@ -30,7 +30,7 @@ class RayTracer:
         return lambert + phong
  
     def __init__(self, scene):
-        self.zero_thres = 1e-10
+        self.zero_thres = 1e-8
         self.delta_move = 1e-5
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
@@ -125,6 +125,7 @@ class RayTracer:
              or np.abs(np.linalg.norm(surf) - 1.0) > self.zero_thres:              
             raise ValueError('Vector not normalized')
         
+        # for numerical stability, add small displacement
         mirror_dir = direction - 2 * np.dot(direction, surf) * surf
         return obj_color + \
             obj['specular'] * self.single_ray(intersection + self.delta_move * mirror_dir, mirror_dir, depth + 1)
@@ -225,7 +226,9 @@ class RayTracer:
             b = self.barycentric(normal, A - C, B - A, A, intersec)
             c = 1 - a - b
             
-            if a >= 0 and b >= 0 and c >= 0:
+            # numerical stability, zero threshold
+            threshold = 0 - self.zero_thres
+            if a > threshold and b > threshold and c > threshold:
                 flag = True
                 t = t_temp
 
