@@ -23,5 +23,6 @@
 #### Example Scene
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-1.png" width="512">
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-2.png" width="512">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-3.png" width="512">
 
 ---
