@@ -6,7 +6,7 @@
 * Phong shading model
 
 #### Example Scene
-<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="600">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="256">
 
 ---
 ### Simple ray tracer in Python 
