@@ -242,7 +242,7 @@ class RayTracer:
                 surf = normal
                 obj = triangle
 
-            # ray and sphere intersection test
+        # ray and sphere intersection test
         for sphere in self.scene.spheres:
             # apply transformation to the ray
             # 'transform' is the pre-computed inverse transformation
