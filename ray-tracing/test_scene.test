@@ -1,12 +1,12 @@
-size 800 600
+size 1024 768
 #size 160 120
 
 output test_scene.png
 camera -0.3 -2.25 1 0 0 0 0 0 1 45
 
 ambient 0 0 0
-directional 0 0 1 .6 .6 .6
-directional 1 -1 1 .6 .6 .6
+directional 0 0 1 .5 .5 .5
+directional 1 -1 1 .5 .5 .5
 
 vertex 0 0 0
 vertex 0.5 0 0
@@ -74,17 +74,17 @@ tri 23 21 22
 
 
 diffuse 0.1 0.1 0.1
-shininess 100
+shininess 50
 
 specular 0.8 0.8 0.8
-sphere -0.5 0.25 0.5 0.25
+sphere -0.5 0.4 0.5 0.25
 
 specular .8 .8 .8
-sphere 0.5 -0.75 0.5 0.25
+sphere 0.5 -0.35 0.5 0.25
 
 specular .0 .0 .0
 diffuse .8 .1 .1
-sphere -0.1 -0.65 0.4 0.15
+sphere -0.1 -0.85 0.4 0.15
 
 
 
