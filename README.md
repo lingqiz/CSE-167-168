@@ -25,7 +25,7 @@
 #### Example Scene
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-1-highres.png" width="600">
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-2-highres.png" width="600">
-<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-3.png" width="600">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-3-highres.png" width="600">
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/trace-4.png" width="600">
 
 ---
