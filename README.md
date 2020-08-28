@@ -6,7 +6,7 @@
 * Phong shading model
 
 #### Example Scene
-<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="384">
+<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="600">
 
 ---
 ### Simple ray tracer in Python 
@@ -14,7 +14,7 @@
 * Phong shading model
 * Mirror reflection with resursive ray tracing
 * Simple acceleration with CPU parallel processing
-* TODO: implement acceleration structure for the ray tracer
+* TODO: implement acceleration structure for the ray tracer (way too slow right now)
 
 #### Usage
 - `python main.py 'scene_file_path' #num_of_process`
