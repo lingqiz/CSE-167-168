@@ -19,7 +19,7 @@
 #### Usage
 - `python main.py 'scene_file_path' #num_of_process`
 - `scene_file` defines camera, light, objects and their surface properties
-- see `.test` for example `scene_file` definition
+- see `.test` files for example `scene_file` definition
 <img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/ray_tracer.png" width="600">
 
 #### Example Scene
