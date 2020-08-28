@@ -34,6 +34,10 @@ class RayTracer:
         self.delta_move = 1e-5
         self.scene = scene
         self.image = np.zeros([scene.height, scene.width, 3])
+    
+    def show_image(self):
+        plt.imshow(self.image)
+        plt.show()
 
     def save_image(self):
         matplotlib.image.imsave('./' + self.scene.output_name, self.image)
@@ -60,8 +64,7 @@ class RayTracer:
         print('Done! \n')
 
         if show_image:
-            plt.imshow(self.image)
-            plt.show()
+            self.show_image()
     
     # pixel-wise ray tracing with parallel processing
     def ray_trace_parallel(self, num_process=2, show_image=True):
@@ -77,8 +80,7 @@ class RayTracer:
             self.image[idh, :, :] = image_rows[idh]
 
         if show_image:        
-            plt.imshow(self.image)
-            plt.show()
+            self.show_image()
     
     # run ray tracing for each row
     def render_row(self, idh):
@@ -210,14 +212,10 @@ class RayTracer:
         direction_world = direction
             
         # ray and triangle intersection test
-        for triangle in self.scene.triangles:
-            origin = (triangle['transform'] @ np.append(origin_world, 1))[0:3]
-            direction = (triangle['transform'] @ np.append(direction_world, 0))[0:3]
-
-            vertice = self.scene.vertices[:, triangle['ver_index']]
-            A = vertice[:, 0]
-            B = vertice[:, 1]
-            C = vertice[:, 2]
+        for triangle in self.scene.triangles:            
+            A = triangle['A']
+            B = triangle['B']
+            C = triangle['C']
 
             normal = triangle['surface']
             
@@ -241,7 +239,7 @@ class RayTracer:
                 flag = True
                 t = t_temp
 
-                surf = triangle['transformed_normal']
+                surf = normal
                 obj = triangle
 
             # ray and sphere intersection test

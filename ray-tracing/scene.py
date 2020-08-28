@@ -50,16 +50,14 @@ class Scene:
 
         self.camera = camera
 
-    def triangle_init(self, input, mtx, material):        
-        vertice_1 = np.array(self.vertices[input[0]])
-        vertice_2 = np.array(self.vertices[input[1]])
-        vertice_3 = np.array(self.vertices[input[2]])
+    def triangle_init(self, input, mtx, material):
+        # apply transformation to the triangle vertice
+        vertices = [(mtx @ np.append(np.array(self.vertices[index]), 1))[0:3] for index in input]
+        
+        normal_vec = self.norm_vec(np.cross(vertices[0] - vertices[1], vertices[0] - vertices[2]))        
 
-        normal_vec = self.norm_vec(np.cross(vertice_1 - vertice_2, vertice_1 - vertice_3))
-        transformed_normal = self.norm_vec((np.linalg.inv(mtx).T)[0:3, 0:3] @ normal_vec)
-
-        triangle = {'ver_index':input, 'transform':np.linalg.inv(mtx), 'surface':normal_vec, \
-                    'transformed_normal':transformed_normal, **material}
+        triangle = {'A':vertices[0], 'B':vertices[1], 'C': vertices[2], \
+            'transform':np.linalg.inv(mtx), 'surface':normal_vec, **material}
 
         self.triangles.append(triangle)
 
