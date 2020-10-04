@@ -1,14 +1,5 @@
-## UCSD CSE 167x (edX), Computer Graphics
+## UCSD CSE 167/168x (edX), Computer Graphics
 
----
-### Simple OpenGL pipeline
-* Transformation
-* Phong shading model
-
-#### Example Scene
-<img src="https://github.com/lingqiz/UCSD-CSE-167x/blob/master/opengl-1.png" width="600">
-
----
 ### Simple ray tracer in Python 
 * Effect of shadow (visibility test)
 * Phong shading model
