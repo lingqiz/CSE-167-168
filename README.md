@@ -1,4 +1,4 @@
-## UCSD CSE 167/168x (edX), Computer Graphics
+## UCSD CSE 167x (edX), Computer Graphics
 
 ### Simple ray tracer in Python 
 * Effect of shadow (visibility test)
